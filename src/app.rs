@@ -1174,15 +1174,20 @@ impl App {
         ])
         .split(area);
         let top = Layout::horizontal([
-            Constraint::Min(10),
-            Constraint::Length(16),
-            Constraint::Length(16),
-            Constraint::Length(10),
-            Constraint::Length(9),
+            Constraint::Min(15),
+            Constraint::Length(17),
+            Constraint::Length(18),
+            Constraint::Length(11),
+            Constraint::Length(11),
         ])
         .split(regions[0]);
         frame.render_widget(
-            Paragraph::new(" postrust / HTTP").style(Style::default().fg(ACCENT).bold()),
+            Paragraph::new(if top[0].width < 16 {
+                " postrust"
+            } else {
+                " postrust / HTTP"
+            })
+            .style(Style::default().fg(ACCENT).bold()),
             Rect::new(top[0].x, top[0].y + 1, top[0].width, 1),
         );
         for (i, label, action) in [
@@ -1680,6 +1685,41 @@ mod tests {
                     screen.contains(label),
                     "Missing {label} at {width}x{height}:\n{screen}"
                 );
+            }
+            let title = screen
+                .lines()
+                .nth(1)
+                .unwrap()
+                .split('│')
+                .next()
+                .unwrap()
+                .trim();
+            assert_eq!(
+                title,
+                if width == 72 {
+                    "postrust"
+                } else {
+                    "postrust / HTTP"
+                }
+            );
+            let buffer = terminal.backend().buffer();
+            for (action, rect) in &app.hits {
+                if matches!(
+                    action,
+                    Action::Workspace | Action::Environment | Action::Save | Action::Help
+                ) {
+                    assert_eq!((rect.y, rect.height), (0, 3));
+                    let label = (rect.x + 1..rect.right() - 1)
+                        .map(|x| buffer[(x, rect.y + 1)].symbol())
+                        .collect::<String>();
+                    let left = label.chars().take_while(|c| *c == ' ').count();
+                    let right = label.chars().rev().take_while(|c| *c == ' ').count();
+                    assert_eq!(
+                        left, right,
+                        "Toolbar label has asymmetric padding at {width}x{height}: {label:?}"
+                    );
+                    assert!(left >= 1, "Toolbar label needs breathing room: {label:?}");
+                }
             }
             for (i, (_, rect)) in app.hits.iter().enumerate() {
                 assert!(rect.right() <= width && rect.bottom() <= height);

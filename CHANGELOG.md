@@ -9,7 +9,7 @@ Initial release of postrust, a terminal HTTP workbench inspired by ATAC and dbru
 - Keep one environment per workspace, with `{{variable}}` substitution and process environment fallback.
 - Send HTTP(S) requests asynchronously with query parameters, headers, raw bodies and bearer authentication.
 - Inspect response status, timing, size, headers and formatted JSON or text, with a bounded 2 MiB preview.
-- Navigate using the mouse, Tab and arrows; switch request tabs with Alt+1–4 or F4.
+- Navigate using the mouse, Tab and arrows; switch request tabs with Alt+1–4 or F4. Toolbar controls have aligned borders and symmetric label padding.
 - Select and copy response text; use Ctrl+C/Ctrl+V with desktop or internal clipboard support.
 - Save request history and workspace data with private Unix file permissions; migrate older workspace files with a backup.
 

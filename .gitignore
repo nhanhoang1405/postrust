@@ -1,0 +1,11 @@
+/target/
+*.tmp
+__pycache__/
+
+# Local credentials and workspace data
+.env
+.env.*
+!.env.example
+/workspace.json
+/workspaces/
+*.v1-backup.json
